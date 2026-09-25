@@ -50,18 +50,27 @@ jobs:
         run: |
           flutter build apk --debug
 
-      - name: Build iOS Simulator App
+      - name: Build iOS App and Payload
         working-directory: ${{ steps.locate.outputs.dir }}
         run: |
-          flutter build ios --no-codesign --simulator
+          # 1. Build for iOS device (no code sign)
+          flutter build ios --no-codesign --release
 
-      - name: Package iOS Runner App
-        working-directory: ${{ steps.locate.outputs.dir }}
-        run: |
-          mkdir -p build/ios_release
+          # 2. Package into Payload structure for .ipa
+          mkdir -p build/ios_release/Payload
+          if [ -d "build/ios/iphoneos/Runner.app" ]; then
+            cp -r build/ios/iphoneos/Runner.app build/ios_release/Payload/
+            cd build/ios_release
+            zip -r IMANI-iOS.ipa Payload
+            rm -rf Payload
+            cd ../..
+          fi
+
+          # 3. Also build Simulator version for Mac testing
+          flutter build ios --no-codesign --simulator
           if [ -d "build/ios/iphonesimulator/Runner.app" ]; then
             cd build/ios/iphonesimulator
-            zip -r ../../ios_release/QuranApp-iOS-Simulator.zip Runner.app
+            zip -r ../../ios_release/IMANI-iOS-Simulator.zip Runner.app
             cd ../../..
           fi
 
@@ -83,9 +92,16 @@ jobs:
           mkdir -p "$TEMP_RELEASE_DIR"
           cp "$APK_PATH" "$TEMP_RELEASE_DIR/app-debug.apk"
 
-          IOS_ZIP="$PROJECT_DIR/build/ios_release/QuranApp-iOS-Simulator.zip"
+          # iOS IPA
+          IPA_PATH="$PROJECT_DIR/build/ios_release/IMANI-iOS.ipa"
+          if [ -f "$IPA_PATH" ]; then
+            cp "$IPA_PATH" "$TEMP_RELEASE_DIR/IMANI-iOS.ipa"
+          fi
+
+          # iOS Simulator Zip
+          IOS_ZIP="$PROJECT_DIR/build/ios_release/IMANI-iOS-Simulator.zip"
           if [ -f "$IOS_ZIP" ]; then
-            cp "$IOS_ZIP" "$TEMP_RELEASE_DIR/QuranApp-iOS-Simulator.zip"
+            cp "$IOS_ZIP" "$TEMP_RELEASE_DIR/IMANI-iOS-Simulator.zip"
           fi
 
           echo "release_dir=$TEMP_RELEASE_DIR" >> "$GITHUB_OUTPUT"
@@ -98,11 +114,18 @@ jobs:
           path: ${{ steps.verify.outputs.apk_path }}
           if-no-files-found: error
 
-      - name: Upload iOS App artifact
+      - name: Upload iOS IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: quran-app-ios-simulator
-          path: ${{ steps.locate.outputs.dir }}/build/ios_release/QuranApp-iOS-Simulator.zip
+          name: imani-ios-ipa
+          path: ${{ steps.locate.outputs.dir }}/build/ios_release/IMANI-iOS.ipa
+          if-no-files-found: warn
+
+      - name: Upload iOS Simulator artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: imani-ios-simulator
+          path: ${{ steps.locate.outputs.dir }}/build/ios_release/IMANI-iOS-Simulator.zip
           if-no-files-found: warn
 
       - name: Publish Release
@@ -112,17 +135,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG_NAME="build-${{ github.run_number }}-${{ github.run_attempt }}"
-          TITLE="Flutter Cross-Platform Build #${{ github.run_number }}"
-          NOTES="### 📱 Quran Flutter App (iOS & Android)
+          TITLE="IMANI App Release #${{ github.run_number }}"
+          NOTES="### 📱 IMANI | إِمَانِي (iOS & Android)
           - **Run Number**: ${{ github.run_number }}
-          - **Run Attempt**: ${{ github.run_attempt }}
-          - **Commit**: ${{ github.sha }}
           - **Android APK**: app-debug.apk
-          - **iOS Simulator Bundle**: QuranApp-iOS-Simulator.zip"
+          - **iOS IPA (Direct iPhone Sideloading)**: IMANI-iOS.ipa
+          - **iOS Simulator Bundle**: IMANI-iOS-Simulator.zip"
 
           ASSETS=("${{ steps.verify.outputs.apk_path }}")
-          if [ -f "${{ steps.verify.outputs.release_dir }}/QuranApp-iOS-Simulator.zip" ]; then
-            ASSETS+=("${{ steps.verify.outputs.release_dir }}/QuranApp-iOS-Simulator.zip")
+          if [ -f "${{ steps.verify.outputs.release_dir }}/IMANI-iOS.ipa" ]; then
+            ASSETS+=("${{ steps.verify.outputs.release_dir }}/IMANI-iOS.ipa")
+          fi
+          if [ -f "${{ steps.verify.outputs.release_dir }}/IMANI-iOS-Simulator.zip" ]; then
+            ASSETS+=("${{ steps.verify.outputs.release_dir }}/IMANI-iOS-Simulator.zip")
           fi
 
           gh release create "$TAG_NAME" "${ASSETS[@]}" \
@@ -135,10 +160,12 @@ jobs:
         if: always()
         run: |
           DIRECT_APK="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/app-debug.apk"
-          DIRECT_IOS="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/QuranApp-iOS-Simulator.zip"
+          DIRECT_IPA="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/IMANI-iOS.ipa"
+          DIRECT_SIMULATOR="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/IMANI-iOS-Simulator.zip"
 
           {
-            echo "### 📱 Direct Download Links"
+            echo "### 📱 Direct Download Links for IMANI"
             echo "- **Android APK**: [$DIRECT_APK]($DIRECT_APK)"
-            echo "- **iOS Simulator App**: [$DIRECT_IOS]($DIRECT_IOS)"
+            echo "- **iOS IPA (iPhone Sideloading)**: [$DIRECT_IPA]($DIRECT_IPA)"
+            echo "- **iOS Simulator App**: [$DIRECT_SIMULATOR]($DIRECT_SIMULATOR)"
           } >> "$GITHUB_STEP_SUMMARY"

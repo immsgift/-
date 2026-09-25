@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -14,13 +15,19 @@ import 'widgets/mini_player.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize lockscreen background notification service for iOS & Android
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.quran.audio.channel',
-    androidNotificationChannelName: 'تلاوة القرآن الكريم والأذكار',
-    androidNotificationOngoing: true,
-    androidStopForegroundOnPause: true,
-  );
+  // Initialize lockscreen background notification service for iOS & Android (skipped on web)
+  if (!kIsWeb) {
+    try {
+      await JustAudioBackground.init(
+        androidNotificationChannelId: 'com.quran.audio.channel',
+        androidNotificationChannelName: 'تلاوة القرآن الكريم والأذكار',
+        androidNotificationOngoing: true,
+        androidStopForegroundOnPause: true,
+      );
+    } catch (e) {
+      debugPrint('Background audio init error: $e');
+    }
+  }
 
   runApp(
     MultiProvider(
