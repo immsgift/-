@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <base href="/-/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="تطبيق إيماني - القرآن الكريم كاملاً مع التلاوة الصوتية، الأذكار اليومية، المسبحة الإلكترونية، وأدعية مختارة.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="إيماني | IMANI">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>IMANI | إِمَانِي - القرآن الكريم والأذكار</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0F4C3A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <style>
+    body {
+      background-color: #0B1E19;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Cairo", "Amiri", sans-serif;
+      color: #E2D9C8;
+      overflow: hidden;
+    }
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(212, 175, 55, 0.2);
+      border-radius: 50%;
+      border-top-color: #D4AF37;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .app-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #D4AF37;
+      letter-spacing: 1px;
+    }
+    .sub-title {
+      font-size: 14px;
+      color: #A3B899;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-container" id="loading">
+    <div class="spinner"></div>
+    <div class="app-title">IMANI | إِمَانِي</div>
+    <div class="sub-title">جاري تحميل التطبيق...</div>
+  </div>
+
+  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    window.addEventListener('load', function() {
+      // Remove loading indicator once flutter is initialized
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('flutter-first-frame', function () {
+          var loading = document.getElementById('loading');
+          if (loading) {
+            loading.remove();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
