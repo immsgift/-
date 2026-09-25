@@ -1,0 +1,144 @@
+name: Build Cross-Platform Flutter Apps (iOS & Android)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Locate Flutter project
+        id: locate
+        run: |
+          if [ -f "flutter_quran_app/pubspec.yaml" ]; then
+            echo "dir=flutter_quran_app" >> "$GITHUB_OUTPUT"
+          elif [ -f "pubspec.yaml" ]; then
+            echo "dir=." >> "$GITHUB_OUTPUT"
+          else
+            echo "Error: pubspec.yaml not found!"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: flutter pub get
+
+      - name: Build Android APK
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: |
+          flutter build apk --debug
+
+      - name: Build iOS Simulator App
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: |
+          flutter build ios --no-codesign --simulator
+
+      - name: Package iOS Runner App
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: |
+          mkdir -p build/ios_release
+          if [ -d "build/ios/iphonesimulator/Runner.app" ]; then
+            cd build/ios/iphonesimulator
+            zip -r ../../ios_release/QuranApp-iOS-Simulator.zip Runner.app
+            cd ../../..
+          fi
+
+      - name: Verify build outputs
+        id: verify
+        run: |
+          PROJECT_DIR="${{ steps.locate.outputs.dir }}"
+          APK_PATH="$PROJECT_DIR/build/app/outputs/flutter-apk/app-debug.apk"
+          if [ ! -f "$APK_PATH" ]; then
+            APK_PATH=$(find "$PROJECT_DIR/build" -name "*.apk" | head -n 1)
+          fi
+
+          if [ -z "$APK_PATH" ] || [ ! -f "$APK_PATH" ]; then
+            echo "Error: Android APK not found"
+            exit 1
+          fi
+
+          TEMP_RELEASE_DIR="${{ runner.temp }}/release_assets"
+          mkdir -p "$TEMP_RELEASE_DIR"
+          cp "$APK_PATH" "$TEMP_RELEASE_DIR/app-debug.apk"
+
+          IOS_ZIP="$PROJECT_DIR/build/ios_release/QuranApp-iOS-Simulator.zip"
+          if [ -f "$IOS_ZIP" ]; then
+            cp "$IOS_ZIP" "$TEMP_RELEASE_DIR/QuranApp-iOS-Simulator.zip"
+          fi
+
+          echo "release_dir=$TEMP_RELEASE_DIR" >> "$GITHUB_OUTPUT"
+          echo "apk_path=$TEMP_RELEASE_DIR/app-debug.apk" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Android APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: ${{ steps.verify.outputs.apk_path }}
+          if-no-files-found: error
+
+      - name: Upload iOS App artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quran-app-ios-simulator
+          path: ${{ steps.locate.outputs.dir }}/build/ios_release/QuranApp-iOS-Simulator.zip
+          if-no-files-found: warn
+
+      - name: Publish Release
+        id: publish_release
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG_NAME="build-${{ github.run_number }}-${{ github.run_attempt }}"
+          TITLE="Flutter Cross-Platform Build #${{ github.run_number }}"
+          NOTES="### 📱 Quran Flutter App (iOS & Android)
+          - **Run Number**: ${{ github.run_number }}
+          - **Run Attempt**: ${{ github.run_attempt }}
+          - **Commit**: ${{ github.sha }}
+          - **Android APK**: app-debug.apk
+          - **iOS Simulator Bundle**: QuranApp-iOS-Simulator.zip"
+
+          ASSETS=("${{ steps.verify.outputs.apk_path }}")
+          if [ -f "${{ steps.verify.outputs.release_dir }}/QuranApp-iOS-Simulator.zip" ]; then
+            ASSETS+=("${{ steps.verify.outputs.release_dir }}/QuranApp-iOS-Simulator.zip")
+          fi
+
+          gh release create "$TAG_NAME" "${ASSETS[@]}" \
+            --title "$TITLE" \
+            --target "${{ github.sha }}" \
+            --latest \
+            --notes "$NOTES"
+
+      - name: Report download results
+        if: always()
+        run: |
+          DIRECT_APK="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/app-debug.apk"
+          DIRECT_IOS="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/QuranApp-iOS-Simulator.zip"
+
+          {
+            echo "### 📱 Direct Download Links"
+            echo "- **Android APK**: [$DIRECT_APK]($DIRECT_APK)"
+            echo "- **iOS Simulator App**: [$DIRECT_IOS]($DIRECT_IOS)"
+          } >> "$GITHUB_STEP_SUMMARY"

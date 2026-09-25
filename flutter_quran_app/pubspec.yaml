@@ -1,0 +1,38 @@
+name: flutter_quran_app
+description: "A complete cross-platform Quran, Adhkar, and Duas application with background audio recitation for iOS and Android."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # Audio playback & Background services
+  just_audio: ^0.9.36
+  just_audio_background: ^0.0.1-beta.11
+  audio_session: ^0.1.18
+
+  # State Management & Utilities
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  google_fonts: ^6.1.0
+  intl: ^0.19.0
+  http: ^1.2.0
+
+  # UI & Icons
+  cupertino_icons: ^1.0.6
+  vibration: ^2.0.1
+  share_plus: ^7.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

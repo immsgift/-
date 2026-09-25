@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Quran Karim"
+rootProject.name = "IMANI"
 
 include(":app")

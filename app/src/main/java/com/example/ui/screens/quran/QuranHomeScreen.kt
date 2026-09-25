@@ -225,7 +225,7 @@ fun QuranHomeHeader(
             ) {
                 Column {
                     Text(
-                        text = "القرآن الكريم",
+                        text = "IMANI | إِمَانِي",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.White

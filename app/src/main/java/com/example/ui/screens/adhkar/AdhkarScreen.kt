@@ -328,7 +328,7 @@ fun AdhkarScreen(
                 onShare = {
                     val shareIntent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, "${item.title}\n\n${item.arabicText}\n\n${item.reference}\n${item.virtue}\n\nتمت المشاركة من تطبيق القرآن الكريم والأذكار")
+                        putExtra(Intent.EXTRA_TEXT, "${item.title}\n\n${item.arabicText}\n\n${item.reference}\n${item.virtue}\n\nتمت المشاركة من تطبيق IMANI | إِمَانِي")
                     }
                     context.startActivity(Intent.createChooser(shareIntent, "مشاركة الذكر"))
                 },

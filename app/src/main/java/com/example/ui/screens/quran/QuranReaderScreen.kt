@@ -300,7 +300,7 @@ fun QuranReaderScreen(
                         onShare = {
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, "﴿ ${ayah.textArabic} ﴾\n[سورة ${surah.nameArabic}: ${ayah.verseNumber}]\n\nتمت المشاركة من تطبيق القرآن الكريم")
+                                putExtra(Intent.EXTRA_TEXT, "﴿ ${ayah.textArabic} ﴾\n[سورة ${surah.nameArabic}: ${ayah.verseNumber}]\n\nتمت المشاركة من تطبيق IMANI | إِمَانِي")
                             }
                             context.startActivity(Intent.createChooser(shareIntent, "مشاركة الآية"))
                         }
