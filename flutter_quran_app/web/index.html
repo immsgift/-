@@ -22,19 +22,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
   <style>
-    body {
-      background-color: #0B1E19;
+    html, body {
+      width: 100%;
+      height: 100%;
       margin: 0;
       padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      background-color: #0B1E19;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Cairo", "Amiri", sans-serif;
       color: #E2D9C8;
-      overflow: hidden;
+      overflow-x: hidden;
+    }
+    body {
+      position: relative;
     }
     .loading-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       display: flex;
       flex-direction: column;
       align-items: center;

@@ -32,12 +32,7 @@ class _SurahReaderScreenState extends State<SurahReaderScreen> {
   Widget build(BuildContext context) {
     final audio = context.watch<QuranAudioPlayerService>();
 
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      alignment: Alignment.center,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 480),
-        child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,8 +216,6 @@ class _SurahReaderScreenState extends State<SurahReaderScreen> {
           );
         },
       ),
-    ),
-    ),
     );
   }
 
