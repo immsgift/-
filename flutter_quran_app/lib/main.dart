@@ -87,46 +87,53 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          IndexedStack(
-            index: _currentIndex,
-            children: _screens,
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      alignment: Alignment.center,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 480),
+        child: Scaffold(
+          body: Stack(
+            children: [
+              IndexedStack(
+                index: _currentIndex,
+                children: _screens,
+              ),
+              const Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: AudioMiniPlayer(),
+              ),
+            ],
           ),
-          const Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: AudioMiniPlayer(),
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: _currentIndex,
+            onDestinationSelected: (idx) => setState(() => _currentIndex = idx),
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.menu_book_outlined),
+                selectedIcon: Icon(Icons.menu_book),
+                label: 'القرآن',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.wb_sunny_outlined),
+                selectedIcon: Icon(Icons.wb_sunny),
+                label: 'الأذكار',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.touch_app_outlined),
+                selectedIcon: Icon(Icons.touch_app),
+                label: 'السبحة',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.bookmark_outline),
+                selectedIcon: Icon(Icons.bookmark),
+                label: 'المحفوظات',
+              ),
+            ],
           ),
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (idx) => setState(() => _currentIndex = idx),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.menu_book_outlined),
-            selectedIcon: Icon(Icons.menu_book),
-            label: 'القرآن',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.wb_sunny_outlined),
-            selectedIcon: Icon(Icons.wb_sunny),
-            label: 'الأذكار',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.touch_app_outlined),
-            selectedIcon: Icon(Icons.touch_app),
-            label: 'السبحة',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.bookmark_outline),
-            selectedIcon: Icon(Icons.bookmark),
-            label: 'المحفوظات',
-          ),
-        ],
+        ),
       ),
     );
   }

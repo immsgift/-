@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
           // Header
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.only(top: 50, bottom: 20, left: 16, right: 16),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [AppColors.emeraldDark, AppColors.emeraldPrimary],
@@ -38,9 +37,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   end: Alignment.bottomCenter,
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 20, left: 16, right: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -79,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
