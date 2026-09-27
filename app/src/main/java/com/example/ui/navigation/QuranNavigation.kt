@@ -21,6 +21,11 @@ import com.example.ui.theme.EmeraldDark
 import com.example.ui.theme.EmeraldPrimary
 import com.example.ui.theme.GoldAccent
 
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.AutoStories
+
+import androidx.compose.material.icons.filled.AutoAwesome
+
 enum class QuranNavDestination(
     val route: String,
     val titleArabic: String,
@@ -28,7 +33,10 @@ enum class QuranNavDestination(
     val testTag: String
 ) {
     QURAN("quran", "القرآن", Icons.AutoMirrored.Filled.MenuBook, "nav_item_quran"),
-    ADHKAR("adhkar", "الأذكار والأدعية", Icons.Default.WbSunny, "nav_item_adhkar"),
+    AI_NAFAHAT("ai_nafahat", "المستشار", Icons.Default.AutoAwesome, "nav_item_ai_nafahat"),
+    PRAYER("prayer", "المواقيت", Icons.Default.AccessTime, "nav_item_prayer"),
+    STORIES("stories", "القصص", Icons.Default.AutoStories, "nav_item_stories"),
+    ADHKAR("adhkar", "الأذكار", Icons.Default.WbSunny, "nav_item_adhkar"),
     TASBIH("tasbih", "السبحة", Icons.Default.DonutLarge, "nav_item_tasbih"),
     BOOKMARKS("bookmarks", "المحفوظات", Icons.Default.Bookmark, "nav_item_bookmarks")
 }

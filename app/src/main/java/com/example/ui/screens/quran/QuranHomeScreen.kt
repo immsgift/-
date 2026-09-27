@@ -66,6 +66,9 @@ import com.example.ui.theme.GoldAccent
 import com.example.ui.theme.GoldLight
 import com.example.ui.theme.ParchmentLight
 
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.AutoStories
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuranHomeScreen(
@@ -74,6 +77,9 @@ fun QuranHomeScreen(
     lastRead: LastReadEntity?,
     onSearchChanged: (String) -> Unit,
     onSurahSelected: (SurahInfo) -> Unit,
+    onNavigateToPrayer: () -> Unit = {},
+    onNavigateToStories: () -> Unit = {},
+    onNavigateToAiNafahat: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val filteredSurahs = remember(searchQuery, allSurahs) {
@@ -161,6 +167,198 @@ fun QuranHomeScreen(
                     reflection = dailyAyah.second,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
                 )
+            }
+
+            // AI Nafahat Spiritual Guide Banner
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .clickable(onClick = onNavigateToAiNafahat)
+                        .testTag("home_ai_nafahat_banner"),
+                    shape = RoundedCornerShape(18.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                Brush.horizontalGradient(
+                                    colors = listOf(EmeraldDark, EmeraldPrimary, Color(0xFF16794C))
+                                )
+                            )
+                            .padding(16.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(46.dp)
+                                    .clip(CircleShape)
+                                    .background(GoldAccent.copy(alpha = 0.25f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AutoAwesome,
+                                    contentDescription = null,
+                                    tint = GoldLight,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "المستشار الإيماني (AI Nafahat)",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp,
+                                        color = Color.White
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Surface(
+                                        shape = RoundedCornerShape(6.dp),
+                                        color = GoldAccent
+                                    ) {
+                                        Text(
+                                            text = "جديد ✨",
+                                            color = EmeraldDark,
+                                            fontSize = 9.sp,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(3.dp))
+                                Text(
+                                    text = "اكتب ما تشعر به؛ ليرشدك الذكاء الاصطناعي لآية ونفحة تواسي قلبك",
+                                    fontSize = 11.sp,
+                                    color = Color.White.copy(alpha = 0.85f),
+                                    lineHeight = 16.sp
+                                )
+                            }
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = null,
+                                tint = GoldLight,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Quick Features: Prayer Times & Stories Buttons
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Prayer Times Button
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable(onClick = onNavigateToPrayer)
+                            .testTag("home_prayer_shortcut"),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(EmeraldPrimary, EmeraldDark)
+                                    )
+                                )
+                                .padding(vertical = 14.dp, horizontal = 12.dp)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(38.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.White.copy(alpha = 0.2f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AccessTime,
+                                        contentDescription = null,
+                                        tint = GoldLight,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column {
+                                    Text(
+                                        text = "مواقيت الصلاة",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "الصلوات الخمس",
+                                        fontSize = 11.sp,
+                                        color = Color.White.copy(alpha = 0.75f)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // Stories of Prophets & Companions Button
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable(onClick = onNavigateToStories)
+                            .testTag("home_stories_shortcut"),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(Color(0xFFD49A24), GoldAccent)
+                                    )
+                                )
+                                .padding(vertical = 14.dp, horizontal = 12.dp)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(38.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.White.copy(alpha = 0.2f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AutoStories,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column {
+                                    Text(
+                                        text = "قصص وعِبر",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "الأنبياء والصحابة",
+                                        fontSize = 11.sp,
+                                        color = Color.White.copy(alpha = 0.8f)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

@@ -12,6 +12,9 @@ import 'screens/tasbih_screen.dart';
 import 'screens/bookmarks_screen.dart';
 import 'widgets/mini_player.dart';
 
+import 'screens/prayer_times_screen.dart';
+import 'screens/stories_screen.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -87,6 +90,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   final List<Widget> _screens = const [
     HomeScreen(),
+    PrayerTimesScreen(),
+    StoriesScreen(),
     AdhkarScreen(),
     TasbihScreen(),
     BookmarksScreen(),
@@ -120,6 +125,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               icon: Icon(Icons.menu_book_outlined),
               selectedIcon: Icon(Icons.menu_book),
               label: 'القرآن',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.access_time_outlined),
+              selectedIcon: Icon(Icons.access_time_filled),
+              label: 'المواقيت',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.auto_stories_outlined),
+              selectedIcon: Icon(Icons.auto_stories),
+              label: 'القصص',
             ),
             NavigationDestination(
               icon: Icon(Icons.wb_sunny_outlined),
