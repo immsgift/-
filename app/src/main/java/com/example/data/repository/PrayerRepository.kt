@@ -18,29 +18,56 @@ import java.util.Locale
 
 object PrayerRepository {
 
-    // Default primary focus: Algeria Cities (الجزائر الحبيبة وولاياتها الرئيسية)
+    // جميع ولايات الجزائر الـ 48 ولاية كاملة ومرتبة بالترقيم الرسمي
     val algerianCities = listOf(
-        CityLocation("الجزائر العاصمة", "Algiers", "Algeria"),
-        CityLocation("وهران", "Oran", "Algeria"),
-        CityLocation("قسنطينة", "Constantine", "Algeria"),
-        CityLocation("عنابة", "Annaba", "Algeria"),
-        CityLocation("سطيف", "Setif", "Algeria"),
-        CityLocation("باتنة", "Batna", "Algeria"),
-        CityLocation("تلمسان", "Tlemcen", "Algeria"),
-        CityLocation("بسكرة", "Biskra", "Algeria"),
-        CityLocation("البليدة", "Blida", "Algeria"),
-        CityLocation("بجاية", "Bejaia", "Algeria"),
-        CityLocation("تيزي وزو", "Tizi Ouzou", "Algeria"),
-        CityLocation("ورقلة", "Ouargla", "Algeria"),
-        CityLocation("غرداية", "Ghardaia", "Algeria"),
-        CityLocation("الشلف", "Chlef", "Algeria"),
-        CityLocation("مستغانم", "Mostaganem", "Algeria"),
-        CityLocation("سيدي بلعباس", "Sidi Bel Abbes", "Algeria"),
-        CityLocation("المسيلة", "MSila", "Algeria"),
-        CityLocation("الجلفة", "Djelfa", "Algeria"),
-        CityLocation("تبسة", "Tebessa", "Algeria"),
-        CityLocation("أدرار", "Adrar", "Algeria"),
-        CityLocation("تمنراست", "Tamanrasset", "Algeria")
+        CityLocation("01 - أدرار", "Adrar", "Algeria"),
+        CityLocation("02 - الشلف", "Chlef", "Algeria"),
+        CityLocation("03 - الأغواط", "Laghouat", "Algeria"),
+        CityLocation("04 - أم البواقي", "Oum El Bouaghi", "Algeria"),
+        CityLocation("05 - باتنة", "Batna", "Algeria"),
+        CityLocation("06 - بجاية", "Bejaia", "Algeria"),
+        CityLocation("07 - بسكرة", "Biskra", "Algeria"),
+        CityLocation("08 - بشار", "Bechar", "Algeria"),
+        CityLocation("09 - البليدة", "Blida", "Algeria"),
+        CityLocation("10 - البويرة", "Bouira", "Algeria"),
+        CityLocation("11 - تمنراست", "Tamanrasset", "Algeria"),
+        CityLocation("12 - تبسة", "Tebessa", "Algeria"),
+        CityLocation("13 - تلمسان", "Tlemcen", "Algeria"),
+        CityLocation("14 - تيارت", "Tiaret", "Algeria"),
+        CityLocation("15 - تيزي وزو", "Tizi Ouzou", "Algeria"),
+        CityLocation("16 - الجزائر العاصمة", "Algiers", "Algeria"),
+        CityLocation("17 - الجلفة", "Djelfa", "Algeria"),
+        CityLocation("18 - جيجل", "Jijel", "Algeria"),
+        CityLocation("19 - سطيف", "Setif", "Algeria"),
+        CityLocation("20 - سعيدة", "Saida", "Algeria"),
+        CityLocation("21 - سكيكدة", "Skikda", "Algeria"),
+        CityLocation("22 - سيدي بلعباس", "Sidi Bel Abbes", "Algeria"),
+        CityLocation("23 - عنابة", "Annaba", "Algeria"),
+        CityLocation("24 - قالمة", "Guelma", "Algeria"),
+        CityLocation("25 - قسنطينة", "Constantine", "Algeria"),
+        CityLocation("26 - المدية", "Medea", "Algeria"),
+        CityLocation("27 - مستغانم", "Mostaganem", "Algeria"),
+        CityLocation("28 - المسيلة", "MSila", "Algeria"),
+        CityLocation("29 - معسكر", "Mascara", "Algeria"),
+        CityLocation("30 - ورقلة", "Ouargla", "Algeria"),
+        CityLocation("31 - وهران", "Oran", "Algeria"),
+        CityLocation("32 - البيض", "El Bayadh", "Algeria"),
+        CityLocation("33 - إليزي", "Illizi", "Algeria"),
+        CityLocation("34 - برج بوعريريج", "Bordj Bou Arreridj", "Algeria"),
+        CityLocation("35 - بومرداس", "Boumerdes", "Algeria"),
+        CityLocation("36 - الطارف", "El Tarf", "Algeria"),
+        CityLocation("37 - تندوف", "Tindouf", "Algeria"),
+        CityLocation("38 - تسمسيلت", "Tissemsilt", "Algeria"),
+        CityLocation("39 - الوادي", "El Oued", "Algeria"),
+        CityLocation("40 - خنشلة", "Khenchela", "Algeria"),
+        CityLocation("41 - سوق أهراس", "Souk Ahras", "Algeria"),
+        CityLocation("42 - تيبازة", "Tipaza", "Algeria"),
+        CityLocation("43 - ميلة", "Mila", "Algeria"),
+        CityLocation("44 - عين الدفلى", "Ain Defla", "Algeria"),
+        CityLocation("45 - النعامة", "Naama", "Algeria"),
+        CityLocation("46 - عين تموشنت", "Ain Temouchent", "Algeria"),
+        CityLocation("47 - غرداية", "Ghardaia", "Algeria"),
+        CityLocation("48 - غليزان", "Relizane", "Algeria")
     )
 
     // Other Islamic Holy Cities
@@ -55,7 +82,6 @@ object PrayerRepository {
     suspend fun getPrayerTimings(city: CityLocation): PrayerTimings = withContext(Dispatchers.IO) {
         try {
             val dateStr = SimpleDateFormat("dd-MM-yyyy", Locale.US).format(Date())
-            // Method 4: Umm al-Qura, Method 3: Muslim World League (often standard for Maghreb/Algeria)
             val method = if (city.country == "Algeria") "3" else "4"
             val urlString = "https://api.aladhan.com/v1/timingsByCity/$dateStr?city=${city.englishName}&country=${city.country}&method=$method"
             val url = URL(urlString)

@@ -1,14 +1,15 @@
 package com.example.ui.screens.ai
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,28 +20,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.FormatQuote
+import androidx.compose.material.icons.filled.Celebration
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.MoodBad
 import androidx.compose.material.icons.filled.Psychology
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SentimentDissatisfied
 import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,58 +49,163 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.data.ai.GeminiNafahatService
-import com.example.data.ai.NafahatResult
 import com.example.ui.theme.EmeraldContainer
 import com.example.ui.theme.EmeraldDark
 import com.example.ui.theme.EmeraldPrimary
 import com.example.ui.theme.GoldAccent
 import com.example.ui.theme.GoldLight
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+data class FeelingCategory(
+    val id: String,
+    val title: String,
+    val subtitle: String,
+    val icon: ImageVector,
+    val verses: List<SpiritualVerseItem>
+)
+
+data class SpiritualVerseItem(
+    val ayahArabic: String,
+    val surahAndAyah: String,
+    val reflection: String,
+    val recommendedDhikr: String
+)
+
+object SpiritualVersesDataSource {
+
+    val categories = listOf(
+        FeelingCategory(
+            id = "tired",
+            title = "تعبان ومُرهق",
+            subtitle = "أشعر بالإرهاق، التعب الجسدي والضيق",
+            icon = Icons.Default.SentimentDissatisfied,
+            verses = listOf(
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ ۖ إِنَّهُ لَا يَيْأَسُ مِن رَّوْحِ اللَّهِ إِلَّا الْقَوْمُ الْكَافِرُونَ ﴾",
+                    surahAndAyah = "سورة يوسف: ٨٧",
+                    reflection = "التعب والوهن يمرّ بهما كل إنسان، لكن رَوْح الله ورحمته ولطفه أوسع من كل إرهاق. استرح بالصلاة وفوّض أمرك لمن لا تأخذه سِنة ولا نوم.",
+                    recommendedDhikr = "يا حي يا قيوم برحمتك أستغيث، أصلح لي شأني كله ولا تكلني إلى نفسي طرفة عين."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ﴾",
+                    surahAndAyah = "سورة البقرة: ٢٨٦",
+                    reflection = "اطمئن، فالله يعلم قدر طاقتك وضعفك ولن يحملك فوق ما تطيق؛ كل سجدة تخفف عنك، وكل تعب محتسب تكفير ورفعة.",
+                    recommendedDhikr = "لا حول ولا قوة إلا بالله العلي العظيم."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَلَقَدْ نَعْلَمُ أَنَّكَ يَضِيقُ صَدْرُكَ بِمَا يَقُولُونَ * فَسَبِّحْ بِحَمْدِ رَبِّكَ وَكُن مِّنَ السَّاجِدِينَ ﴾",
+                    surahAndAyah = "سورة الحجر: ٩٧-٩٨",
+                    reflection = "حين يثقل كاهلك التعب وضيق الصدر، فإن الدواء الرباني هو التسبيح والافتقار بالسجود، فالسجود يفرغ شحنات التعب ويبدل الوهن سكينة.",
+                    recommendedDhikr = "سبحان الله وبحمده، سبحان الله العظيم."
+                )
+            )
+        ),
+        FeelingCategory(
+            id = "sad",
+            title = "حزين ومهموم",
+            subtitle = "قلبي متألم وضائق من هموم الدنيا",
+            icon = Icons.Default.MoodBad,
+            verses = listOf(
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا ﴾",
+                    surahAndAyah = "سورة التوبة: ٤٠",
+                    reflection = "كلمة الصدق النبوي في أحلك لحظات الغار؛ معية الله كافية لتبديد كل حزن وظلمة وخوف. لن يضيع قلبٌ أيقن أن ربه معه.",
+                    recommendedDhikr = "حسبنا الله ونعم الوكيل، نعم المولى ونعم النصير."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ فَإِنَّ مَعَ الْعُسْرِ يُسْرًا * إِنَّ مَعَ الْعُسْرِ يُسْرًا ﴾",
+                    surahAndAyah = "سورة الشرح: ٥-٦",
+                    reflection = "وعد إلهي مكرر ومؤكد، لن يغلب عسرٌ يسرين. اليُسر يولد مع قلب الشدة ذاتها، وسيبعث الله بعد هذا الحزن فرحاً يتعجب منه قلبك.",
+                    recommendedDhikr = "لا إله إلا أنت سبحانك إني كنت من الظالمين."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَبَشِّرِ الصَّابِرِينَ * الَّذِينَ إِذَا أَصَابَتْهُم مُّصِيبَةٌ قَالُوا إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ ﴾",
+                    surahAndAyah = "سورة البقرة: ١٥٥-١٥٦",
+                    reflection = "البشارة العظمى من الخالق للصابرين؛ كل ألم تخفيه ودمعة تحبسها مسجلة عنده سبحانه وسيعوضك خيراً مما فاتك.",
+                    recommendedDhikr = "إنا لله وإنا إليه راجعون، اللهم أجرني في مصيبتي واخلف لي خيراً منها."
+                )
+            )
+        ),
+        FeelingCategory(
+            id = "happy",
+            title = "فرحان ومستبشر",
+            subtitle = "أشعر بالسعادة والشكر والامتنان لله",
+            icon = Icons.Default.Celebration,
+            verses = listOf(
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ قُلْ بِفَضْلِ اللَّهِ وَبِرَحْمَتِهِ فَبِذَٰلِكَ فَلْيَفْرَحُوا هُوَ خَيْرٌ مِّمَّا يَجْمَعُونَ ﴾",
+                    surahAndAyah = "سورة يونس: ٥٨",
+                    reflection = "أعظم الفرح هو الفرح بهداية الله ورضوانه ولطفه بك وبأهلك. قيّد فرحتك بدوام الحمد والشكر حتى تدوم وتزداد بركتها.",
+                    recommendedDhikr = "الحمد لله حمداً كثيراً طيباً مباركاً فيه."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ ﴾",
+                    surahAndAyah = "سورة إبراهيم: ٧",
+                    reflection = "الشكر هو حارس النعم ومستجلب المزيد منها؛ ما استديمت نعم الله بمثل شكرها والتواضع له ونفع عباده بها.",
+                    recommendedDhikr = "اللهم ما أصبح بي من نعمة أو بأحد من خلقك فمنك وحدك لا شريك لك، فلك الحمد ولك الشكر."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَآتَاكُم مِّن كُلِّ مَا سَأَلْتُمُوهُ ۚ وَإِن تَعُدُّوا نِعْمَتَ اللَّهِ لَا تُحْصُوهَا ﴾",
+                    surahAndAyah = "سورة إبراهيم: ٣٤",
+                    reflection = "تأمل نعم الله التي تحيط بك من كل جانب، واجعل فرحتك سبباً في إدخال السرور على قلوب المحتاجين والضعفاء.",
+                    recommendedDhikr = "اللهم أعني على ذكرك وشكرك وحسن عبادتك."
+                )
+            )
+        ),
+        FeelingCategory(
+            id = "loving",
+            title = "مُحب ومُشتاق",
+            subtitle = "يفيض قلبي بمحبة الله ورسوله والخير للناس",
+            icon = Icons.Default.Favorite,
+            verses = listOf(
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَالَّذِينَ آمَنُوا أَشَدُّ حُبًّا لِّلَّهِ ﴾",
+                    surahAndAyah = "سورة البقرة: ١٦٥",
+                    reflection = "محبة الله هي أزكى المشاعر وأعلاها، بها تحلو الطاعات وتهون التضحيات. من أحب ربه أنس بذكره واطمأن بقربه.",
+                    recommendedDhikr = "اللهم إني أسألك حبك، وحب من يحبك، وحب عمل يقربني إلى حبك."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ قُلْ إِن كُنتُمْ تُحِبُّونَ اللَّهَ فَاتَّبِعُونِي يُحْبِبْكُمُ اللَّهُ وَيَغْفِرْ لَكُمْ ذُنُوبَكُمْ ﴾",
+                    surahAndAyah = "سورة آل عمران: ٣١",
+                    reflection = "صدق المحبة يظهر في اتباع هدي الحبيب المصطفى ﷺ في أخلاقه ورحمته وتواضعه مع كل الناس.",
+                    recommendedDhikr = "اللهم صل وسلم وبارك على نبينا وحبيبنا محمد وعلى آله وصحبه أجمعين."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ إِنَّ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ سَيَجْعَلُ لَهُمُ الرَّحْمَٰنُ وُدًّا ﴾",
+                    surahAndAyah = "سورة مريم: ٩٦",
+                    reflection = "إذا أحب الله عبداً وضع له المحبة والقبول والود الصادق في قلوب أهل الأرض والسماء.",
+                    recommendedDhikr = "سبحان الله والحمد لله ولا إله إلا الله والله أكبر."
+                )
+            )
+        )
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AiNafahatScreen(
     modifier: Modifier = Modifier
 ) {
-    var userPrompt by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-    var nafahatResult by remember { mutableStateOf<NafahatResult?>(null) }
-    val coroutineScope = rememberCoroutineScope()
+    val categories = SpiritualVersesDataSource.categories
+    var selectedCategoryIndex by remember { mutableIntStateOf(0) }
+    var currentVerseIndex by remember { mutableIntStateOf(0) }
 
-    val sampleFeelings = listOf(
-        "أشعر بضيق وتوتر من الامتحانات",
-        "غاضب من موقف حدث معي اليوم",
-        "أشعر بالحزن والوحدة",
-        "خائف من المستقبل والرزق",
-        "أشعر بالذنب والتقصير في العبادة",
-        "مريض ومتعب جسدياً ونفسياً"
-    )
-
-    fun submitQuery(query: String) {
-        if (query.isBlank()) return
-        isLoading = true
-        userPrompt = query
-        coroutineScope.launch {
-            val res = GeminiNafahatService.consultSpiritualGuide(query)
-            nafahatResult = res
-            isLoading = false
-        }
-    }
+    val currentCategory = categories[selectedCategoryIndex]
+    val currentVerse = currentCategory.verses[currentVerseIndex % currentCategory.verses.size]
 
     Scaffold(
         modifier = modifier.fillMaxSize().testTag("ai_nafahat_screen"),
@@ -115,7 +221,7 @@ fun AiNafahatScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "المستشار الإيماني (AI Nafahat)",
+                            text = "آية لقلبك حسب حالتك",
                             fontWeight = FontWeight.Bold,
                             fontSize = 17.sp
                         )
@@ -135,7 +241,7 @@ fun AiNafahatScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Header Banner
+            // Hero Intro Banner
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -156,7 +262,7 @@ fun AiNafahatScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     modifier = Modifier
-                                        .size(44.dp)
+                                        .size(46.dp)
                                         .clip(CircleShape)
                                         .background(GoldAccent.copy(alpha = 0.25f)),
                                     contentAlignment = Alignment.Center
@@ -171,13 +277,13 @@ fun AiNafahatScreen(
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Column {
                                     Text(
-                                        text = "بثّ ما في صدرك لكتاب ربك",
+                                        text = "اختر حالتك القلبية الآن",
                                         fontWeight = FontWeight.Bold,
                                         color = Color.White,
-                                        fontSize = 16.sp
+                                        fontSize = 17.sp
                                     )
                                     Text(
-                                        text = "اكتب ما تشعر به؛ ليجيبك القرآن ببلسم وهداية",
+                                        text = "اختر شعورك واضغط ليخرج لك القرآن بآية تواسيك وتلهمك",
                                         color = GoldLight,
                                         fontSize = 12.sp
                                     )
@@ -188,98 +294,57 @@ fun AiNafahatScreen(
                 }
             }
 
-            // Input card
+            // Feeling Selection Tabs
             item {
-                Card(
+                Text(
+                    text = "بماذا تشعر في هذه اللحظة؟",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = "بماذا تشعر الآن؟",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        OutlinedTextField(
-                            value = userPrompt,
-                            onValueChange = { userPrompt = it },
-                            placeholder = { Text("مثال: أشعر بضيق وتوتر من الامتحانات، أو غاضب من موقف...") },
-                            trailingIcon = {
-                                if (userPrompt.isNotEmpty()) {
-                                    IconButton(onClick = { userPrompt = "" }) {
-                                        Icon(imageVector = Icons.Default.Clear, contentDescription = "مسح")
+                    categories.forEachIndexed { index, cat ->
+                        val isSelected = selectedCategoryIndex == index
+                        Card(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {
+                                    if (selectedCategoryIndex != index) {
+                                        selectedCategoryIndex = index
+                                        currentVerseIndex = 0
                                     }
                                 }
-                            },
+                                .testTag("feeling_tab_${cat.id}"),
                             shape = RoundedCornerShape(14.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = EmeraldPrimary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-                                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isSelected) EmeraldPrimary else MaterialTheme.colorScheme.surface
                             ),
-                            maxLines = 4,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Button(
-                            onClick = { submitQuery(userPrompt) },
-                            enabled = userPrompt.isNotBlank() && !isLoading,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp)
-                                .testTag("submit_ai_nafahat_btn"),
-                            shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = EmeraldPrimary
-                            )
+                            border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)) else null,
+                            elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 3.dp else 1.dp)
                         ) {
-                            if (isLoading) {
-                                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("جارٍ الاستشارة والتدبر...")
-                            } else {
-                                Icon(imageVector = Icons.Default.AutoAwesome, contentDescription = null, tint = GoldLight)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("استشر المستشار الإيماني", fontWeight = FontWeight.Bold)
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Quick suggestion pills
-            if (nafahatResult == null && !isLoading) {
-                item {
-                    Text(
-                        text = "أو اختر من المشاعر الشائعة:",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        sampleFeelings.forEach { feeling ->
-                            Surface(
-                                shape = RoundedCornerShape(20.dp),
-                                color = EmeraldContainer.copy(alpha = 0.5f),
-                                border = androidx.compose.foundation.BorderStroke(1.dp, EmeraldPrimary.copy(alpha = 0.2f)),
-                                modifier = Modifier.clickable { submitQuery(feeling) }
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 12.dp, horizontal = 4.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
+                                Icon(
+                                    imageVector = cat.icon,
+                                    contentDescription = cat.title,
+                                    tint = if (isSelected) GoldLight else EmeraldPrimary,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
                                 Text(
-                                    text = feeling,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = EmeraldDark,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                    text = cat.title.split(" ").firstOrNull() ?: cat.title,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                    fontSize = 13.sp,
+                                    color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         }
@@ -287,131 +352,161 @@ fun AiNafahatScreen(
                 }
             }
 
-            // AI Result Card
-            if (nafahatResult != null) {
-                val res = nafahatResult!!
-                item {
+            // Action Button: "أعطني آية أخرى لهذه الحالة"
+            item {
+                Button(
+                    onClick = {
+                        currentVerseIndex = (currentVerseIndex + 1) % currentCategory.verses.size
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .testTag("get_another_ayah_btn"),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = GoldAccent
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = null,
+                        tint = EmeraldDark,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "الجواب والبلسم الإيماني:",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onBackground
+                        text = "اضغط هنا لعرض آية لحالة: ${currentCategory.title}",
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 15.sp,
+                        color = EmeraldDark
                     )
                 }
+            }
 
-                // Quran Ayah Card
-                item {
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp),
-                        color = GoldLight.copy(alpha = 0.25f),
-                        border = androidx.compose.foundation.BorderStroke(1.5.dp, GoldAccent)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(20.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+            // Animated Verse Result Card
+            item {
+                AnimatedContent(
+                    targetState = currentVerse,
+                    transitionSpec = { fadeIn() togetherWith fadeOut() },
+                    label = "verse_transition"
+                ) { verse ->
+                    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                        // Quran Ayah Card
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(20.dp),
+                            color = GoldLight.copy(alpha = 0.25f),
+                            border = androidx.compose.foundation.BorderStroke(1.5.dp, GoldAccent)
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.MenuBook,
-                                    contentDescription = null,
-                                    tint = GoldAccent,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
+                            Column(
+                                modifier = Modifier.padding(22.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.MenuBook,
+                                        contentDescription = null,
+                                        tint = GoldAccent,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "بلسم القرآن لقلبك",
+                                        fontWeight = FontWeight.Bold,
+                                        color = EmeraldDark,
+                                        fontSize = 14.sp
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = "آية لقلبك في هذا الموقف",
+                                    text = verse.ayahArabic,
+                                    fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = EmeraldDark,
-                                    fontSize = 14.sp
+                                    textAlign = TextAlign.Center,
+                                    lineHeight = 34.sp
                                 )
-                            }
-                            Spacer(modifier = Modifier.height(14.dp))
-                            Text(
-                                text = res.ayahArabic,
-                                fontSize = 19.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = EmeraldDark,
-                                textAlign = TextAlign.Center,
-                                lineHeight = 32.sp
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = res.surahAndAyah,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-
-                // Gentle Spiritual Advice
-                item {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(18.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.Lightbulb,
-                                    contentDescription = null,
-                                    tint = GoldAccent
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = "نفحة وتدبر للموقف:",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 15.sp,
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Surface(
+                                    shape = RoundedCornerShape(10.dp),
                                     color = EmeraldPrimary
-                                )
+                                ) {
+                                    Text(
+                                        text = verse.surahAndAyah,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                                    )
+                                }
                             }
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                text = res.gentleAdvice,
-                                fontSize = 15.sp,
-                                lineHeight = 24.sp,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
                         }
-                    }
-                }
 
-                // Recommended Dhikr
-                item {
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        color = EmeraldContainer.copy(alpha = 0.5f),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, EmeraldPrimary.copy(alpha = 0.3f))
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.VolunteerActivism,
-                                    contentDescription = null,
-                                    tint = EmeraldPrimary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
+                        // Reflection
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(18.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.Lightbulb,
+                                        contentDescription = null,
+                                        tint = GoldAccent
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "نفحة ووقفة تدبّر:",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp,
+                                        color = EmeraldPrimary
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(10.dp))
                                 Text(
-                                    text = "دعاء وذكر مقترح لترديده الآن:",
-                                    fontWeight = FontWeight.Bold,
-                                    color = EmeraldPrimary,
-                                    fontSize = 14.sp
+                                    text = verse.reflection,
+                                    fontSize = 15.sp,
+                                    lineHeight = 24.sp,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = res.recommendedDhikr,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                lineHeight = 26.sp,
-                                color = EmeraldDark
-                            )
+                        }
+
+                        // Recommended Dhikr
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            color = EmeraldContainer.copy(alpha = 0.5f),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, EmeraldPrimary.copy(alpha = 0.3f))
+                        ) {
+                            Column(modifier = Modifier.padding(18.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.VolunteerActivism,
+                                        contentDescription = null,
+                                        tint = EmeraldPrimary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "دعاء وذكر مقترح لترديده الآن:",
+                                        fontWeight = FontWeight.Bold,
+                                        color = EmeraldPrimary,
+                                        fontSize = 14.sp
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = verse.recommendedDhikr,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    lineHeight = 26.sp,
+                                    color = EmeraldDark
+                                )
+                            }
                         }
                     }
                 }

@@ -134,12 +134,15 @@ fun StoriesScreen(
                 containerColor = EmeraldDark,
                 contentColor = Color.White
             ) {
+                val prophetCount = remember { StoriesRepository.allStories.count { it.category == StoryCategory.PROPHET } }
+                val sahabaCount = remember { StoriesRepository.allStories.count { it.category == StoryCategory.SAHABA } }
+
                 Tab(
                     selected = selectedTabIndex == 0,
                     onClick = { selectedTabIndex = 0 },
                     text = {
                         Text(
-                            text = "قصص الأنبياء",
+                            text = "قصص الأنبياء ($prophetCount)",
                             fontWeight = if (selectedTabIndex == 0) FontWeight.Bold else FontWeight.Normal,
                             color = if (selectedTabIndex == 0) GoldLight else Color.White.copy(alpha = 0.7f)
                         )
@@ -157,7 +160,7 @@ fun StoriesScreen(
                     onClick = { selectedTabIndex = 1 },
                     text = {
                         Text(
-                            text = "سير الصحابة",
+                            text = "سير الصحابة ($sahabaCount)",
                             fontWeight = if (selectedTabIndex == 1) FontWeight.Bold else FontWeight.Normal,
                             color = if (selectedTabIndex == 1) GoldLight else Color.White.copy(alpha = 0.7f)
                         )
@@ -272,30 +275,31 @@ private fun StoryCardItem(
             Spacer(modifier = Modifier.width(14.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = story.title,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = if (isProphet) EmeraldPrimary.copy(alpha = 0.1f) else GoldAccent.copy(alpha = 0.15f)
-                    ) {
-                        Text(
-                            text = story.honorific,
-                            color = if (isProphet) EmeraldPrimary else GoldAccent,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                        )
-                    }
-                }
+                Text(
+                    text = story.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 17.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
 
                 Spacer(modifier = Modifier.height(4.dp))
+
+                Surface(
+                    shape = RoundedCornerShape(6.dp),
+                    color = if (isProphet) EmeraldPrimary.copy(alpha = 0.1f) else GoldAccent.copy(alpha = 0.15f)
+                ) {
+                    Text(
+                        text = story.honorific,
+                        color = if (isProphet) EmeraldPrimary else GoldAccent,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
                     text = story.subtitle,

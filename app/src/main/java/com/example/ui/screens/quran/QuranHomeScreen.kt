@@ -209,7 +209,7 @@ fun QuranHomeScreen(
                             Column(modifier = Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        text = "المستشار الإيماني (AI Nafahat)",
+                                        text = "آية لقلبك حسب حالتك (نفحات)",
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 15.sp,
                                         color = Color.White
@@ -220,7 +220,7 @@ fun QuranHomeScreen(
                                         color = GoldAccent
                                     ) {
                                         Text(
-                                            text = "جديد ✨",
+                                            text = "مميز ✨",
                                             color = EmeraldDark,
                                             fontSize = 9.sp,
                                             fontWeight = FontWeight.ExtraBold,
@@ -230,7 +230,7 @@ fun QuranHomeScreen(
                                 }
                                 Spacer(modifier = Modifier.height(3.dp))
                                 Text(
-                                    text = "اكتب ما تشعر به؛ ليرشدك الذكاء الاصطناعي لآية ونفحة تواسي قلبك",
+                                    text = "تعبان، فرحان، حزين، أو محب؟ اختر حالتك بلمسة واحدة ليظهر لك القرآن بآية تواسيك",
                                     fontSize = 11.sp,
                                     color = Color.White.copy(alpha = 0.85f),
                                     lineHeight = 16.sp
@@ -423,7 +423,7 @@ fun QuranHomeHeader(
             ) {
                 Column {
                     Text(
-                        text = "IMANI | إِمَانِي",
+                        text = "IMANI | إِيمٓانِي",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.White

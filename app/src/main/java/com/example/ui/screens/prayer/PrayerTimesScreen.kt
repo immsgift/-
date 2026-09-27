@@ -88,8 +88,10 @@ fun PrayerTimesScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    var selectedCity by remember { mutableStateOf(PrayerRepository.algerianCities.first()) }
-    var locationDisplayName by remember { mutableStateOf("الجزائر العاصمة (التوقيت الرسمي)") }
+    var selectedCity by remember { 
+        mutableStateOf(PrayerRepository.algerianCities.firstOrNull { it.englishName == "Algiers" } ?: PrayerRepository.algerianCities.first()) 
+    }
+    var locationDisplayName by remember { mutableStateOf("16 - الجزائر العاصمة (التوقيت الرسمي)") }
     var isUsingAutoGps by remember { mutableStateOf(false) }
 
     var prayerTimings by remember { mutableStateOf<PrayerTimings?>(null) }
@@ -336,7 +338,7 @@ fun PrayerTimesScreen(
                                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
                                     modifier = Modifier
                                         .menuAnchor(MenuAnchorType.PrimaryNotEditable)
-                                        .width(180.dp),
+                                        .width(200.dp),
                                     shape = RoundedCornerShape(12.dp)
                                 )
 
