@@ -98,7 +98,7 @@ class QuranViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         val db = QuranDatabase.getDatabase(application)
-        repository = QuranRepository(db.quranDao())
+        repository = QuranRepository(db.quranDao(), application)
         audioManager = QuranAudioManager(application)
         audioPlaybackState = audioManager.playbackState
 

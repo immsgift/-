@@ -1,5 +1,6 @@
 package com.example.data.repository
 
+import android.content.Context
 import com.example.data.local.BookmarkEntity
 import com.example.data.local.FavoriteDuaEntity
 import com.example.data.local.LastReadEntity
@@ -11,16 +12,19 @@ import com.example.data.model.DhikrItem
 import com.example.data.model.SurahInfo
 import kotlinx.coroutines.flow.Flow
 
-class QuranRepository(private val quranDao: QuranDao) {
+class QuranRepository(
+    private val quranDao: QuranDao,
+    private val context: Context
+) {
 
-    // Surah list
+    // Surah list (All 114 Surahs offline)
     fun getAllSurahs(): List<SurahInfo> = QuranDataSources.allSurahs
 
     fun getSurahById(id: Int): SurahInfo? = QuranDataSources.allSurahs.firstOrNull { it.id == id }
 
-    suspend fun getSurahVerses(surahId: Int): List<Ayah> = QuranDataSources.getSurahVerses(surahId)
+    suspend fun getSurahVerses(surahId: Int): List<Ayah> = QuranDataSources.getSurahVerses(context, surahId)
 
-    // Adhkar & Duas
+    // Adhkar & Duas (100% Offline)
     fun getCategories(): List<DhikrCategory> = AdhkarDataSources.categories
 
     fun getAdhkarByCategory(categoryId: String): List<DhikrItem> =
@@ -28,7 +32,7 @@ class QuranRepository(private val quranDao: QuranDao) {
 
     fun getAllAdhkarAndDuas(): List<DhikrItem> = AdhkarDataSources.allAdhkarItems
 
-    // Bookmarks
+    // Bookmarks (Room Database local persistence)
     val bookmarks: Flow<List<BookmarkEntity>> = quranDao.getAllBookmarks()
 
     suspend fun addBookmark(surahId: Int, surahName: String, ayahNumber: Int, ayahText: String) {

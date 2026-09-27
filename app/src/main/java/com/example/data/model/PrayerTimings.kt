@@ -14,5 +14,7 @@ data class PrayerTimings(
 data class CityLocation(
     val arabicName: String,
     val englishName: String,
-    val country: String
+    val country: String,
+    val latitude: Double = 36.7538,
+    val longitude: Double = 3.0588
 )

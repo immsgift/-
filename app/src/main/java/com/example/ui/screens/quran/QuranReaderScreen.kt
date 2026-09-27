@@ -258,14 +258,14 @@ fun QuranReaderScreen(
                     CircularProgressIndicator(color = EmeraldPrimary)
                     Spacer(modifier = Modifier.height(14.dp))
                     Text(
-                        text = "جارٍ جلب الآيات الكريمة والشرح المعتمد...",
+                        text = "جارٍ تحميل السورة المباركة والتفسير...",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = "توثيق مباشر من المصحف الشريف Uthmani Text",
+                        text = "المصحف الشريف بالرسم العثماني والتفسير الميسر (مدمج بدون نت)",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
