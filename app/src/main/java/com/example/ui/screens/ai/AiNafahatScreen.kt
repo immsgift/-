@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,8 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -50,7 +47,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -107,10 +103,28 @@ object SpiritualVersesDataSource {
                     recommendedDhikr = "لا حول ولا قوة إلا بالله العلي العظيم."
                 ),
                 SpiritualVerseItem(
-                    ayahArabic = "﴿ وَلَقَدْ نَعْلَمُ أَنَّكَ يَضِيقُ صَدْرُكَ بِمَا يَقُولُونَ * فَسَبِّحْ بِحَمْدِ رَبِّكَ وَكُن مِّنَ السَّاجِدِينَ ﴾",
+                    ayahArabic = "﴿ وَلَقَدْ نَعْلَمُ أَنَّكَ يَضِيقُ صَدْرُكَ بِمَا يَقُولُونَ ۝ فَسَبِّحْ بِحَمْدِ رَبِّكَ وَكُن مِّنَ السَّاجِدِينَ ﴾",
                     surahAndAyah = "سورة الحجر: ٩٧-٩٨",
                     reflection = "حين يثقل كاهلك التعب وضيق الصدر، فإن الدواء الرباني هو التسبيح والافتقار بالسجود، فالسجود يفرغ شحنات التعب ويبدل الوهن سكينة.",
                     recommendedDhikr = "سبحان الله وبحمده، سبحان الله العظيم."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَتَوَكَّلْ عَلَى الْحَيِّ الَّذِي لَا يَمُوتُ وَسَبِّحْ بِحَمْدِهِ ﴾",
+                    surahAndAyah = "سورة الفرقان: ٥٨",
+                    reflection = "البشر يضعفون ويعجزون، أما الله فهو الحي القيوم الدائم القوة والعطاء؛ ألقِ كل أتعابك ومخاوفك بين يديه وسيتولاك بلطفه.",
+                    recommendedDhikr = "توكلت على الحي الذي لا يموت، والحمد لله الذي لم يتخذ ولداً."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا ۖ وَسَبِّحْ بِحَمْدِ رَبِّكَ حِينَ تَقُومُ ﴾",
+                    surahAndAyah = "سورة الطور: ٤٨",
+                    reflection = "ما أجمل وأعظم هذا الوعد الإلهي: 'فَإِنَّكَ بِأَعْيُنِنَا'! كل لحظة تعب وصبر أنت فيها تحت رعاية الله وعينه التي لا تنام.",
+                    recommendedDhikr = "حسبي ربي من كل شيء، حسبي الله ونعم الوكيل."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ أَلَيْسَ اللَّهُ بِكَافٍ عَبْدَهُ ﴾",
+                    surahAndAyah = "سورة الزمر: ٣٦",
+                    reflection = "استفهام تقريري يملأ الروح طمأنينة؛ كفاية الله لك تغنيك عن كل أحد وتحميك من كل تعب وخوف ووهن.",
+                    recommendedDhikr = "اللهم اكفني بحلالك عن حرامك، وبفضلك عمن سواك."
                 )
             )
         ),
@@ -127,16 +141,34 @@ object SpiritualVersesDataSource {
                     recommendedDhikr = "حسبنا الله ونعم الوكيل، نعم المولى ونعم النصير."
                 ),
                 SpiritualVerseItem(
-                    ayahArabic = "﴿ فَإِنَّ مَعَ الْعُسْرِ يُسْرًا * إِنَّ مَعَ الْعُسْرِ يُسْرًا ﴾",
+                    ayahArabic = "﴿ فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا ﴾",
                     surahAndAyah = "سورة الشرح: ٥-٦",
                     reflection = "وعد إلهي مكرر ومؤكد، لن يغلب عسرٌ يسرين. اليُسر يولد مع قلب الشدة ذاتها، وسيبعث الله بعد هذا الحزن فرحاً يتعجب منه قلبك.",
                     recommendedDhikr = "لا إله إلا أنت سبحانك إني كنت من الظالمين."
                 ),
                 SpiritualVerseItem(
-                    ayahArabic = "﴿ وَبَشِّرِ الصَّابِرِينَ * الَّذِينَ إِذَا أَصَابَتْهُم مُّصِيبَةٌ قَالُوا إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ ﴾",
+                    ayahArabic = "﴿ وَبَشِّرِ الصَّابِرِينَ ۝ الَّذِينَ إِذَا أَصَابَتْهُم مُّصِيبَةٌ قَالُوا إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ ﴾",
                     surahAndAyah = "سورة البقرة: ١٥٥-١٥٦",
                     reflection = "البشارة العظمى من الخالق للصابرين؛ كل ألم تخفيه ودمعة تحبسها مسجلة عنده سبحانه وسيعوضك خيراً مما فاتك.",
                     recommendedDhikr = "إنا لله وإنا إليه راجعون، اللهم أجرني في مصيبتي واخلف لي خيراً منها."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ ﴾",
+                    surahAndAyah = "سورة البقرة: ١٨٦",
+                    reflection = "أقرب مما تظن! ليس بينك وبينه حجاب؛ في أوج حزنك وخلوتك ارفع يديك وبث شكواك لسميع الدعاء.",
+                    recommendedDhikr = "يا فارج الهم ويا كاشف الغم، فرج همي ويسر أمري وارحم ضعفي."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ ﴾",
+                    surahAndAyah = "سورة الرعد: ٢٨",
+                    reflection = "القلب المضطرب الحزين لا يسكنه جاه ولا مال، إنما سكناه وسكونه في ذكر مولاه والاتصال بحبله المتين.",
+                    recommendedDhikr = "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَأُفَوِّضُ أَمْرِي إِلَى اللَّهِ ۚ إِنَّ اللَّهَ بَصِيرٌ بِالْعِبَادِ ﴾",
+                    surahAndAyah = "سورة غافر: ٤٤",
+                    reflection = "التفويض راحة النفس؛ حين تعجز حيلتك سلّم زمام أمرك لمدبر الأكوان العليم بحالك وبصير بضعفك.",
+                    recommendedDhikr = "أفوض أمري إلى الله، إن الله بصير بالعباد."
                 )
             )
         ),
@@ -163,6 +195,24 @@ object SpiritualVersesDataSource {
                     surahAndAyah = "سورة إبراهيم: ٣٤",
                     reflection = "تأمل نعم الله التي تحيط بك من كل جانب، واجعل فرحتك سبباً في إدخال السرور على قلوب المحتاجين والضعفاء.",
                     recommendedDhikr = "اللهم أعني على ذكرك وشكرك وحسن عبادتك."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ ﴾",
+                    surahAndAyah = "سورة الضحى: ١١",
+                    reflection = "التحدث بنعم الله اعترافاً بفضله وإحسانه يورث القلب تواضعاً ومحبة للخالق المنعم.",
+                    recommendedDhikr = "الحمد لله الذي بنعمته تتم الصالحات."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ إِنَّ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ يَهْدِيهِمْ رَبُّهُم بِإِيمَانِهِمْ ۖ تَجْرِي مِن تَحْتِهِمُ الْأَنْهَارُ فِي جَنَّاتِ النَّعِيمِ ﴾",
+                    surahAndAyah = "سورة يونس: ٩",
+                    reflection = "السعادة الحقيقية تبدأ بنور الإيمان في الدنيا وتكتمل بالنعيم المقيم في جنات الخلد.",
+                    recommendedDhikr = "رضيت بالله رباً وبالإسلام ديناً وبمحمد ﷺ نبياً ورسولاً."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ هَلْ جَزَاءُ الْإِحْسَانِ إِلَّا الْإِحْسَانُ ﴾",
+                    surahAndAyah = "سورة الرحمن: ٦٠",
+                    reflection = "سنة الله الجارية؛ من أحسن النية والعمل وأقبل على ربه، غمره الله بإحسانه وأفاض عليه من كرمه وفرحه.",
+                    recommendedDhikr = "سبحان الله والحمد لله ولا إله إلا الله والله أكبر."
                 )
             )
         ),
@@ -188,7 +238,25 @@ object SpiritualVersesDataSource {
                     ayahArabic = "﴿ إِنَّ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ سَيَجْعَلُ لَهُمُ الرَّحْمَٰنُ وُدًّا ﴾",
                     surahAndAyah = "سورة مريم: ٩٦",
                     reflection = "إذا أحب الله عبداً وضع له المحبة والقبول والود الصادق في قلوب أهل الأرض والسماء.",
-                    recommendedDhikr = "سبحان الله والحمد لله ولا إله إلا الله والله أكبر."
+                    recommendedDhikr = "سبحان الله وبحمده عدد خلقه ورضا نفسه وزنة عرشه ومداد كلماته."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ رَّحْمَٰنِ رَّحِيمٍ ۝ يُحِبُّهُمْ وَيُحِبُّونَهُ ﴾",
+                    surahAndAyah = "سورة المائدة: ٥٤",
+                    reflection = "شرف ليس بعده شرف؛ أن يحبك رب العزة والجلال، فاجعل رضا ومحبة الله غايتك الأسمى في كل عمل.",
+                    recommendedDhikr = "يا ودود يا ودود، يا ذا العرش المجيد، يا فعالاً لما تريد."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَاخْفِضْ جَنَاحَكَ لِلْمُؤْمِنِينَ ﴾",
+                    surahAndAyah = "سورة الحجر: ٨٨",
+                    reflection = "المحبة الإيمانية تتجسد في لين الجانب، والتواضع لإخوانك، وصفاء السريرة من الغل والحسد.",
+                    recommendedDhikr = "اللهم ألف بين قلوبنا وأصلح ذات بيننا واهدنا سبل السلام."
+                ),
+                SpiritualVerseItem(
+                    ayahArabic = "﴿ وَتَوَاصَوْا بِالصَّبْرِ وَتَوَاصَوْا بِالْمَرْحَمَةِ ﴾",
+                    surahAndAyah = "سورة البلد: ١٧",
+                    reflection = "الرحمة هي تاج المحبة؛ الراحمون يرحمهم الرحمن، ارحم من في الأرض يرحمك من في السماء.",
+                    recommendedDhikr = "اللهم ارحمنا وارحم والدينا والمسلمين أجمعين."
                 )
             )
         )
@@ -205,7 +273,8 @@ fun AiNafahatScreen(
     var currentVerseIndex by remember { mutableIntStateOf(0) }
 
     val currentCategory = categories[selectedCategoryIndex]
-    val currentVerse = currentCategory.verses[currentVerseIndex % currentCategory.verses.size]
+    val totalVersesInCat = currentCategory.verses.size
+    val currentVerse = currentCategory.verses[currentVerseIndex % totalVersesInCat]
 
     Scaffold(
         modifier = modifier.fillMaxSize().testTag("ai_nafahat_screen"),
@@ -221,7 +290,7 @@ fun AiNafahatScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "آية لقلبك حسب حالتك",
+                            text = "آية لقلبك حسب حالتك (نفحات إيمانية)",
                             fontWeight = FontWeight.Bold,
                             fontSize = 17.sp
                         )
@@ -283,7 +352,7 @@ fun AiNafahatScreen(
                                         fontSize = 17.sp
                                     )
                                     Text(
-                                        text = "اختر شعورك واضغط ليخرج لك القرآن بآية تواسيك وتلهمك",
+                                        text = "مجموعة واسعة من آيات الطمأنينة والشرح المعتمد لكل حالة",
                                         color = GoldLight,
                                         fontSize = 12.sp
                                     )
@@ -352,15 +421,15 @@ fun AiNafahatScreen(
                 }
             }
 
-            // Action Button: "أعطني آية أخرى لهذه الحالة"
+            // Action Button: "أعطني آية أخرى لهذه الحالة" with counter
             item {
                 Button(
                     onClick = {
-                        currentVerseIndex = (currentVerseIndex + 1) % currentCategory.verses.size
+                        currentVerseIndex = (currentVerseIndex + 1) % totalVersesInCat
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
+                        .height(52.dp)
                         .testTag("get_another_ayah_btn"),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -376,7 +445,7 @@ fun AiNafahatScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "اضغط هنا لعرض آية لحالة: ${currentCategory.title}",
+                        text = "آية أخرى لـ ${currentCategory.title} (${(currentVerseIndex % totalVersesInCat) + 1} من $totalVersesInCat)",
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 15.sp,
                         color = EmeraldDark
@@ -459,7 +528,7 @@ fun AiNafahatScreen(
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
-                                        text = "نفحة ووقفة تدبّر:",
+                                        text = "شرح وتدبّر الآية:",
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 15.sp,
                                         color = EmeraldPrimary

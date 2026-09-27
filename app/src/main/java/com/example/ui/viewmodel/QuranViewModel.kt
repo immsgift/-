@@ -143,6 +143,11 @@ class QuranViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun retryLoadSurahVerses() {
+        val currentSurah = _quranState.value.activeSurah ?: return
+        openSurah(currentSurah)
+    }
+
     fun closeSurahReader() {
         audioManager.stopAll()
         _quranState.value = _quranState.value.copy(

@@ -157,7 +157,8 @@ fun QuranAppRoot(viewModel: QuranViewModel) {
                                     text = ayah.textArabic,
                                     isBookmarked = isBookmarked
                                 )
-                            }
+                            },
+                            onRetry = { viewModel.retryLoadSurahVerses() }
                         )
                     } else {
                         QuranHomeScreen(
