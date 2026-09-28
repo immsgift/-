@@ -101,13 +101,15 @@ class QuranAudioManager(private val context: Context) {
     }
 
     /**
-     * Plays recitation audio for an Ayah or Surah via HTTP stream.
+     * Plays recitation audio for an Ayah or Surah via HTTP stream,
+     * with automatic offline TTS fallback if offline.
      */
     fun playQuranAudio(
         surahId: Int,
         ayahNumber: Int,
         surahName: String,
         reciterFolder: String = "Alafasy_128kbps",
+        ayahText: String? = null,
         onAyahCompleted: (() -> Unit)? = null
     ) {
         stopAll()
@@ -124,6 +126,29 @@ class QuranAudioManager(private val context: Context) {
             activeSurahId = surahId,
             activeAyahNumber = ayahNumber
         )
+
+        fun fallbackToTts() {
+            if (!ayahText.isNullOrBlank()) {
+                val clean = ayahText.replace("۝", "")
+                val params = android.os.Bundle()
+                val utteranceId = "ayah_${surahId}_$ayahNumber"
+                params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, utteranceId)
+                _playbackState.value = AudioPlaybackState(
+                    isPlaying = true,
+                    isBuffering = false,
+                    title = "سورة $surahName (قارئ أوفلاين)",
+                    subtitle = "الآية رقم $ayahNumber",
+                    activeSurahId = surahId,
+                    activeAyahNumber = ayahNumber
+                )
+                textToSpeech?.speak(clean, TextToSpeech.QUEUE_FLUSH, params, utteranceId)
+            } else {
+                _playbackState.value = _playbackState.value.copy(
+                    isPlaying = false,
+                    isBuffering = false
+                )
+            }
+        }
 
         try {
             mediaPlayer = MediaPlayer().apply {
@@ -152,19 +177,13 @@ class QuranAudioManager(private val context: Context) {
                     onAyahCompleted?.invoke()
                 }
                 setOnErrorListener { _, _, _ ->
-                    _playbackState.value = _playbackState.value.copy(
-                        isPlaying = false,
-                        isBuffering = false
-                    )
+                    fallbackToTts()
                     true
                 }
                 prepareAsync()
             }
-        } catch (e: Exception) {
-            _playbackState.value = _playbackState.value.copy(
-                isPlaying = false,
-                isBuffering = false
-            )
+        } catch (_: Exception) {
+            fallbackToTts()
         }
     }
 

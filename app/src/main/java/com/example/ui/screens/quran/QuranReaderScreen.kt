@@ -296,14 +296,14 @@ fun QuranReaderScreen(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "تعذّر جلب الآيات الكريمة",
+                            text = "تعذّر فتح السورة المباركة",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "يرجى التحقق من اتصال الإنترنت (Verify connection) لجلب النص القرآني المعتمد والموثق كاملاً من المصدر الرسمي.",
+                            text = "حدث خطأ أثناء قراءة ملف السورة من الذاكرة المحلية، اضغط على إعادة المحاولة لفتحها فوراً.",
                             style = MaterialTheme.typography.bodySmall,
                             textAlign = TextAlign.Center,
                             lineHeight = 20.sp,

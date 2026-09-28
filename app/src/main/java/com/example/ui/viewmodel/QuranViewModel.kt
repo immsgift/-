@@ -181,11 +181,13 @@ class QuranViewModel(application: Application) : AndroidViewModel(application) {
     fun playAyahAudio(surahId: Int, ayahNumber: Int) {
         val surahName = _quranState.value.activeSurah?.nameArabic ?: ""
         val reciter = _quranState.value.selectedReciter
+        val ayahText = _quranState.value.activeVerses.firstOrNull { it.verseNumber == ayahNumber }?.textArabic
         audioManager.playQuranAudio(
             surahId = surahId,
             ayahNumber = ayahNumber,
             surahName = surahName,
             reciterFolder = reciter.baseUrl,
+            ayahText = ayahText,
             onAyahCompleted = {
                 // Autoplay next verse if available
                 val nextAyah = ayahNumber + 1

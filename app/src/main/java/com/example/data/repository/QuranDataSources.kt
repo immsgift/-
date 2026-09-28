@@ -206,7 +206,8 @@ object QuranDataSources {
                     list
                 }
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            android.util.Log.e("QuranDataSources", "Error loading asset for surah $surahId: ${e.message}", e)
             null
         }
     }
