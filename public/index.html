@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>IMANI | إِيمٓانِي</title>
+  
+  <!-- Standalone iOS & PWA Configuration -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="إِيمَانِي">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#093E26">
+  <meta name="description" content="تطبيق إيماني (IMANI) الشامل للقرآن الكريم مع مواقيت الصلاة، قصص الأنبياء وسير الصحابة، الأذكار والسبحة الإلكترونية.">
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Arabic Fonts matching the Android Theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/style.css?v=2.7">
+</head>
+<body>
+  <!-- iOS Safari Install Guidance (Hidden in Standalone mode) -->
+  <div id="ios-install-banner" class="ios-banner hidden">
+    <div class="ios-banner-content">
+      <div class="ios-banner-icon">
+        <img src="/apple-touch-icon.png" alt="إِيمَانِي">
+      </div>
+      <div class="ios-banner-text">
+        <div class="ios-banner-title">تثبيت «إِيمٓانِي» على شاشة الآيفون</div>
+        <div class="ios-banner-desc">اضغط زر المشاركة <span class="share-icon">⎋</span> بالأسفل ثم <strong>«إضافة إلى الصفحة الرئيسية ➕»</strong> ليصبح تطبيقاً كاملاً بملء الشاشة بدون شريط متصفح!</div>
+      </div>
+      <button id="close-ios-banner" class="close-btn">&times;</button>
+    </div>
+  </div>
+
+  <div id="app" class="app-container">
+    
+    <!-- MAIN CONTENT VIEWPORT -->
+    <main class="main-viewport">
+      
+      <!-- 1. SCREEN: QURAN (Home) -->
+      <section id="screen-quran" class="tab-screen active">
+        <!-- Header Banner matching QuranHomeHeader -->
+        <header class="quran-home-header">
+          <div class="header-top-row">
+            <div>
+              <h1 class="app-title-main">IMANI | إِيمٓانِي</h1>
+              <p class="app-title-sub">كِتَابٌ أَنزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِّيَدَّبَّرُوا آيَاتِهِ</p>
+            </div>
+            <img src="/icon.svg" class="header-app-logo" alt="إِيمٓانِي">
+          </div>
+
+          <!-- Last Read Card -->
+          <div id="last-read-card" class="last-read-container hidden">
+            <div class="last-read-badge">متابعة القراءة</div>
+            <div class="last-read-row">
+              <div>
+                <h3 id="last-read-surah-name" class="last-read-title">سورة الفاتحة</h3>
+                <p id="last-read-ayah-num" class="last-read-subtitle">الآية رقم 1</p>
+              </div>
+              <button id="btn-continue-reading" class="btn-continue">
+                <span>متابعة</span>
+                <span>‹</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="surah-search-input" placeholder="ابحث عن سورة بالاسم أو الرقم..." />
+            <button id="btn-clear-search" class="clear-search-btn hidden">&times;</button>
+          </div>
+        </div>
+
+        <!-- Daily Ayah Inspiration Card -->
+        <div id="daily-ayah-card" class="daily-ayah-card">
+          <div class="daily-ayah-header">
+            <span class="daily-ayah-tag">آية اليوم وتأملها ✨</span>
+            <span class="daily-ayah-ref">سورة البقرة: 152</span>
+          </div>
+          <div class="daily-ayah-text">﴿ فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ ﴾</div>
+          <div class="daily-ayah-reflection">ما من لحظة تذكر الله فيها في نفسك إلا ذكرك في ملأ خير منهم، فاجعل لسانك رطباً بذكره ترزق طمأنينة القلب وسعة الصدر.</div>
+        </div>
+
+        <!-- AI Nafahat Banner -->
+        <div id="home-nafahat-shortcut" class="nafahat-home-banner">
+          <div class="nafahat-icon-glow">✨</div>
+          <div class="nafahat-text-col">
+            <div class="nafahat-banner-title">
+              <span>آية لقلبك حسب حالتك (نفحات)</span>
+              <span class="badge-gold">مميز ✨</span>
+            </div>
+            <p>تعبان، فرحان، حزين، أو قلقان؟ اختر حالتك بلمسة واحدة ليظهر لك القرآن بآية تواسيك</p>
+          </div>
+          <span class="arrow-gold">‹</span>
+        </div>
+
+        <!-- Quick Shortcuts: Prayer & Stories -->
+        <div class="home-shortcuts-row">
+          <div id="home-prayer-shortcut" class="home-shortcut-card prayer-card">
+            <div class="shortcut-icon-circle">⏰</div>
+            <div>
+              <div class="shortcut-title">مواقيت الصلاة</div>
+              <div class="shortcut-sub">الصلوات الخمس والقبلة</div>
+            </div>
+          </div>
+          <div id="home-stories-shortcut" class="home-shortcut-card stories-card">
+            <div class="shortcut-icon-circle">📜</div>
+            <div>
+              <div class="shortcut-title">قصص وعِبر</div>
+              <div class="shortcut-sub">الأنبياء والصحابة</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Surah Section Title -->
+        <div class="surahs-header-row">
+          <h2 class="surahs-header-title">فهرس السور المباركة</h2>
+          <span id="surahs-count-label" class="surahs-header-count">114 سورة (أوفلاين)</span>
+        </div>
+
+        <!-- Surahs List -->
+        <div id="surahs-list" class="surahs-list"></div>
+      </section>
+
+      <!-- 2. SCREEN: AI NAFAHAT (نفحات) -->
+      <section id="screen-ai_nafahat" class="tab-screen">
+        <div class="nafahat-screen-hero">
+          <div class="nafahat-hero-badge">مستشارك الإيماني الذكي 🌿</div>
+          <h2 class="nafahat-hero-title">نفحات قرآنية لسكينة روحك</h2>
+          <p class="nafahat-hero-desc">ماذا يمر ببالك أو قلبك الآن؟ اختر حالتك أو صف شعورك بكلماتك:</p>
+        </div>
+
+        <!-- Mood chips -->
+        <div id="mood-chips-grid" class="mood-chips-container"></div>
+
+        <!-- Custom Feeling Input -->
+        <div class="custom-feeling-box">
+          <input type="text" id="custom-feeling-input" placeholder="أو اكتب ما تشعر به هنا (مثلاً: متوتر من نتائج، ضيق مالي)..." />
+          <button id="btn-submit-feeling" class="btn-emerald">ابحث عن آية 🕊️</button>
+        </div>
+
+        <!-- Nafahat Result Card -->
+        <div id="nafahat-result-card" class="nafahat-result-card hidden">
+          <div class="result-card-header">
+            <span class="result-surah-tag" id="nafahat-result-surah">سورة الرعد: 28</span>
+            <button id="btn-copy-nafahat" class="btn-copy-icon" title="نسخ">📋</button>
+          </div>
+          <div class="result-ayah-arabic" id="nafahat-result-ayah">﴿ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ ﴾</div>
+          <div class="result-advice-box">
+            <div class="result-advice-title">💡 تأمل ونور لقلبك:</div>
+            <div class="result-advice-text" id="nafahat-result-advice">اطمئن، فكل أمرك بيد أرحم الراحمين.</div>
+          </div>
+          <div class="result-dhikr-box">
+            <div class="result-dhikr-title">🤲 ذكر مقترح لترديده:</div>
+            <div class="result-dhikr-text" id="nafahat-result-dhikr">لا إله إلا أنت سبحانك إني كنت من الظالمين</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. SCREEN: PRAYER (المواقيت) -->
+      <section id="screen-prayer" class="tab-screen">
+        <!-- City Selector -->
+        <div class="city-selector-bar">
+          <label>📍 الولاية / المدينة (الجزائر 🇩🇿):</label>
+          <select id="prayer-city-select" class="city-select"></select>
+        </div>
+
+        <!-- Prayer Times Hero Card with Countdown -->
+        <div class="prayer-hero-card">
+          <div class="prayer-hero-tag">الصلاة القادمة</div>
+          <div id="next-prayer-title" class="prayer-hero-name">صلاة العصر</div>
+          <div id="next-prayer-timer" class="prayer-hero-countdown">01:24:35</div>
+          <div id="prayer-date-label" class="prayer-hero-date">الجمعة • التوقيت المحلي الدقيق أوفلاين</div>
+        </div>
+
+        <!-- Prayer Timetable -->
+        <div id="prayer-timings-grid" class="prayer-cards-grid"></div>
+
+        <!-- Qibla Info Card -->
+        <div class="qibla-card">
+          <div class="qibla-icon">🕋</div>
+          <div>
+            <div class="qibla-title">اتجاه القبلة الشريفة</div>
+            <div class="qibla-desc">مكة المكرمة - الكعبة المشرفة (تقريباً 105° جنوب شرق من الجزائر)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. SCREEN: STORIES (قصص الأنبياء والصحابة) -->
+      <section id="screen-stories" class="tab-screen">
+        <div class="stories-header">
+          <h2>قصص الأنبياء وسير الصحابة</h2>
+          <p>عِبر خالدة ومواقف إيمانية ملهمة من القرآن الكريم والسنة النبوية</p>
+        </div>
+
+        <!-- Category Tabs matching Android StoriesScreen -->
+        <div class="stories-tabs">
+          <button class="stories-tab-btn active" data-filter="prophet">✨ قصص الأنبياء (22)</button>
+          <button class="stories-tab-btn" data-filter="companion">⭐ سير الصحابة (17)</button>
+          <button class="stories-tab-btn" data-filter="all">الكل (39)</button>
+        </div>
+
+        <!-- Stories Search -->
+        <div class="search-container" style="padding: 0 0 12px 0;">
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="stories-search-input" placeholder="ابحث باسم النبي أو الصحابي..." />
+          </div>
+        </div>
+
+        <!-- Stories List -->
+        <div id="stories-list" class="stories-list"></div>
+      </section>
+
+      <!-- 5. SCREEN: ADHKAR (الأذكار) -->
+      <section id="screen-adhkar" class="tab-screen">
+        <div class="adhkar-header">
+          <h2>حصن المسلم والأذكار</h2>
+          <p>أذكار اليوم والليلة والأدعية المأثورة الصحيحة مع العداد التفاعلي</p>
+        </div>
+
+        <!-- Category Chips -->
+        <div id="adhkar-categories-row" class="adhkar-cats-scroll"></div>
+
+        <!-- Adhkar Items List -->
+        <div id="adhkar-items-list" class="adhkar-items-list"></div>
+      </section>
+
+      <!-- 6. SCREEN: TASBIH (السبحة) -->
+      <section id="screen-tasbih" class="tab-screen">
+        <div class="tasbih-screen-content">
+          <div class="tasbih-screen-title">السبحة الإلكترونية الذكية</div>
+          <div id="tasbih-current-phrase" class="tasbih-active-phrase">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ</div>
+
+          <!-- Big Counter Ring -->
+          <div class="tasbih-ring-container" id="tasbih-counter-btn">
+            <svg class="tasbih-svg-progress" viewBox="0 0 200 200">
+              <circle class="tasbih-circle-bg" cx="100" cy="100" r="85"></circle>
+              <circle id="tasbih-circle-progress" class="tasbih-circle-fill" cx="100" cy="100" r="85"></circle>
+            </svg>
+            <div class="tasbih-counter-center">
+              <div id="tasbih-main-count" class="tasbih-count-digit">0</div>
+              <div id="tasbih-target-label" class="tasbih-target-text">الهدف: 33</div>
+            </div>
+          </div>
+
+          <!-- Target Selector -->
+          <div class="tasbih-targets-row">
+            <span class="target-title">الهدف:</span>
+            <button class="target-btn active" data-target="33">33</button>
+            <button class="target-btn" data-target="100">100</button>
+            <button class="target-btn" data-target="0">حر (مفتوح)</button>
+          </div>
+
+          <!-- Preset Dhikr Chips -->
+          <div id="tasbih-phrases-row" class="tasbih-phrases-scroll"></div>
+
+          <!-- Actions -->
+          <div class="tasbih-actions-bar">
+            <button id="btn-reset-tasbih-count" class="btn-tasbih-action">🔄 إعادة تصفير</button>
+            <div class="tasbih-total-badge">مجموع اليوم: <strong id="tasbih-total-display">0</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. SCREEN: BOOKMARKS (المحفوظات) -->
+      <section id="screen-bookmarks" class="tab-screen">
+        <div class="bookmarks-screen-header">
+          <h2>المحفوظات وختمة القرآن</h2>
+          <p>العلامات المرجعية والآيات المفضلة ومتابعة قراءتك اليومية</p>
+        </div>
+
+        <!-- Khatmah Progress Card -->
+        <div class="khatmah-card">
+          <div class="khatmah-header">
+            <span>معدل إنجاز الختمة المباركة 📖</span>
+            <span id="khatmah-percent" class="khatmah-val">1.2%</span>
+          </div>
+          <div class="khatmah-progress-bar">
+            <div id="khatmah-bar-fill" class="khatmah-fill" style="width: 1.2%;"></div>
+          </div>
+          <p id="khatmah-status-text" class="khatmah-meta">وصلت إلى سورة الفاتحة (الآية 1)</p>
+        </div>
+
+        <div class="bookmarks-list-title">العلامات المرجعية المحفوظة:</div>
+        <div id="bookmarks-items-list" class="bookmarks-items-list"></div>
+      </section>
+
+    </main>
+
+    <!-- FLOATING AUDIO MINI PLAYER -->
+    <div id="audio-mini-player" class="audio-mini-player hidden">
+      <div class="mini-player-progress">
+        <div id="mini-player-bar" class="mini-player-fill" style="width: 0%;"></div>
+      </div>
+      <div class="mini-player-body">
+        <div class="mini-player-icon">🔊</div>
+        <div class="mini-player-info">
+          <div id="mini-player-surah" class="mini-player-title">سورة الفاتحة</div>
+          <div id="mini-player-reciter" class="mini-player-sub">القارئ: مشاري راشد العفاسي</div>
+        </div>
+        <div class="mini-player-controls">
+          <button id="btn-mini-play" class="mini-control-btn">⏸</button>
+          <button id="btn-mini-close" class="mini-control-btn">&times;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULLSCREEN QURAN READER MODAL -->
+    <div id="reader-modal" class="fullscreen-reader hidden theme-mushaf">
+      <header class="reader-top-bar">
+        <button id="btn-reader-back" class="reader-back-btn">‹ رجوع</button>
+        <div class="reader-surah-headings">
+          <h2 id="reader-surah-name">سورة الفاتحة</h2>
+          <span id="reader-surah-meta">مكية • 7 آيات</span>
+        </div>
+        <div class="reader-actions-group">
+          <!-- View Mode Toggle (Mushaf / Ayahs) -->
+          <button id="btn-reader-mode" class="tool-chip" title="تبديل وضع القراءة">
+            <span id="reader-mode-icon">📖</span> <span id="reader-mode-label">مصحف</span>
+          </button>
+          <!-- Theme Toggle (Parchment / Dark) -->
+          <button id="btn-reader-theme" class="tool-chip" title="خلفية القراءة">
+            <span id="reader-theme-icon">📜</span>
+          </button>
+          <!-- Font Size Adjuster -->
+          <button id="btn-font-scale" class="tool-chip" title="حجم الخط">A+</button>
+          <!-- Tafsir Toggle -->
+          <button id="btn-reader-tafsir" class="tool-chip active" title="التفسير الميسر">التفسير</button>
+          <!-- Audio Recitation -->
+          <button id="btn-reader-audio" class="tool-chip" title="تلاوة السورة">🎧</button>
+        </div>
+      </header>
+
+      <!-- Reciter selector panel -->
+      <div id="reciter-panel" class="reciter-selector-bar hidden">
+        <span>القارئ:</span>
+        <select id="reader-reciter-select" class="reciter-dropdown">
+          <option value="Alafasy_128kbps">مشاري راشد العفاسي</option>
+          <option value="Abdul_Basit_Murattal_192kbps">عبد الباسط عبد الصمد</option>
+          <option value="Maher_AlMuaiqly_64kbps">ماهر المعيقلي</option>
+          <option value="Husary_128kbps">محمود خليل الحصري</option>
+          <option value="Minshawy_Murattal_128kbps">محمد صديق المنشاوي</option>
+        </select>
+        <button id="btn-start-surah-audio" class="btn-play-surah">تشغيل التلاوة ▶</button>
+      </div>
+
+      <!-- Surah Verses Container -->
+      <div id="reader-scroll-view" class="reader-scroll-view">
+        <!-- Luxury Surah Title Ornamental Frame -->
+        <div class="surah-ornamental-frame">
+          <div class="surah-frame-corner top-right">❧</div>
+          <div class="surah-frame-corner top-left">☙</div>
+          <div class="surah-frame-header-tag">المصحف الشريف بالرسم العثماني</div>
+          <div id="surah-frame-title" class="surah-frame-title">سُورَةُ الفَاتِحَةِ</div>
+          <div class="surah-frame-meta-badges">
+            <span id="surah-badge-revelation" class="surah-frame-badge">مكية 🕋</span>
+            <span id="surah-badge-verses" class="surah-frame-badge">٧ آيات 📜</span>
+            <span id="surah-badge-order" class="surah-frame-badge">ترتيبها ١ في المصحف</span>
+          </div>
+          <div class="surah-frame-corner bottom-right">❧</div>
+          <div class="surah-frame-corner bottom-left">☙</div>
+        </div>
+
+        <!-- Bismillah Arch -->
+        <div id="reader-bismillah-box" class="bismillah-ornament">
+          <div class="bismillah-decor-line"><span>✦</span><hr><span>✦</span></div>
+          <div class="bismillah-text-ar">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <div class="bismillah-decor-line"><span>✦</span><hr><span>✦</span></div>
+        </div>
+
+        <!-- Mode A: Continuous Mushaf Flow (ورق المصحف الأصيل) -->
+        <div id="reader-mushaf-view" class="mushaf-flow-container"></div>
+
+        <!-- Mode B: Ayah Cards List (البطاقات والتفسير) -->
+        <div id="reader-verses-list" class="reader-verses-list hidden"></div>
+
+        <!-- Inspiring Reading Encouragement & Next Surah Card -->
+        <div class="khatmah-encouragement-card">
+          <div class="khatmah-enc-icon">✨</div>
+          <div class="khatmah-enc-title" id="khatmah-enc-title">هنيئاً لك تلاوة هذه السورة المباركة</div>
+          <div class="khatmah-enc-ayah">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾</div>
+          <div class="khatmah-enc-sub">قال النبي ﷺ: «من قرأ حرفاً من كتاب الله فله به حسنة، والحسنة بعشر أمثالها»</div>
+          <div class="reader-navigation-row">
+            <button id="btn-prev-surah" class="nav-surah-btn">▶ السورة السابقة</button>
+            <button id="btn-next-surah" class="nav-surah-btn primary">اقرأ السورة التالية ◀</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULLSCREEN STORY MODAL -->
+    <div id="story-modal" class="fullscreen-reader hidden">
+      <header class="reader-top-bar">
+        <button id="btn-story-back" class="reader-back-btn">‹ رجوع</button>
+        <div class="reader-surah-headings">
+          <h2 id="story-modal-title">آدم عليه السلام</h2>
+          <span id="story-modal-subtitle">أبو البشر وأول الأنبياء</span>
+        </div>
+        <button id="btn-story-share" class="tool-chip">مشاركة 📤</button>
+      </header>
+
+      <div class="reader-scroll-view" style="padding: 16px;">
+        <!-- Story Hero Banner -->
+        <div class="story-hero-banner">
+          <span id="story-hero-honorific" class="story-hero-badge">عليه الصلاة والسلام</span>
+          <h1 id="story-hero-title" class="story-hero-name">آدم عليه السلام</h1>
+          <p id="story-hero-subtitle" class="story-hero-desc">أبو البشر وخلقه من طين، وسجود الملائكة وخروجه من الجنة واستغفاره وتوبته</p>
+        </div>
+
+        <!-- Quranic Ayah Card -->
+        <div id="story-ayah-card" class="story-quranic-box">
+          <div class="story-quran-header">
+            <span class="story-quran-icon">📖</span>
+            <span>من الذكر الحكيم</span>
+          </div>
+          <div class="story-quran-text" id="story-quranic-ayah"></div>
+          <div class="story-quran-ref" id="story-ayah-ref"></div>
+        </div>
+
+        <!-- Story Narrative Section -->
+        <div class="story-section-title">
+          <span class="story-title-icon">📜</span>
+          <span>السيرة العطرة وتفاصيل القصة المباركة:</span>
+        </div>
+
+        <div id="story-paragraphs-container" class="story-paragraphs-flow"></div>
+
+        <!-- Moral & Wisdom Lessons -->
+        <div class="story-lessons-card">
+          <div class="story-lessons-title">
+            <span>💡</span>
+            <span>العِبر والدروس والحكم المستفادة من القصة:</span>
+          </div>
+          <ul id="story-lessons-list" class="story-lessons-ul"></ul>
+        </div>
+
+        <!-- Next / Prev Story Navigation -->
+        <div class="reader-navigation-row" style="margin-top: 24px; margin-bottom: 20px;">
+          <button id="btn-prev-story" class="nav-surah-btn">▶ القصة السابقة</button>
+          <button id="btn-next-story" class="nav-surah-btn primary">القصة التالية ◀</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION (Matching QuranBottomNavigationBar with all 7 destinations) -->
+    <nav class="bottom-navigation-bar">
+      <button class="nav-button active" data-dest="quran">
+        <span class="nav-icon">📖</span>
+        <span class="nav-text">القرآن</span>
+      </button>
+      <button class="nav-button" data-dest="ai_nafahat">
+        <span class="nav-icon">✨</span>
+        <span class="nav-text">نفحات</span>
+      </button>
+      <button class="nav-button" data-dest="prayer">
+        <span class="nav-icon">⏰</span>
+        <span class="nav-text">المواقيت</span>
+      </button>
+      <button class="nav-button" data-dest="stories">
+        <span class="nav-icon">📜</span>
+        <span class="nav-text">القصص</span>
+      </button>
+      <button class="nav-button" data-dest="adhkar">
+        <span class="nav-icon">☀️</span>
+        <span class="nav-text">الأذكار</span>
+      </button>
+      <button class="nav-button" data-dest="tasbih">
+        <span class="nav-icon">📿</span>
+        <span class="nav-text">السبحة</span>
+      </button>
+      <button class="nav-button" data-dest="bookmarks">
+        <span class="nav-icon">🔖</span>
+        <span class="nav-text">المحفوظات</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script src="/stories-data.js?v=2.7"></script>
+  <script src="/adhkar-data.js?v=2.7"></script>
+  <script src="/app.js?v=2.7"></script>
+</body>
+</html>
